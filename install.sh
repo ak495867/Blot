@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO_ZIP="https://github.com/ak495867/Blot/archive/refs/heads/main.zip"
+REPO_ZIP="https://github.com/ak495867/Blot/archive/refs/heads/master.zip"
 INSTALL_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/blot"
 BIN_DIR="${HOME}/.local/bin"
 PYTHON=""

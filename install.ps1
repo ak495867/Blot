@@ -1,6 +1,6 @@
 $ErrorActionPreference = "Stop"
 
-$RepoZip = "https://github.com/ak495867/Blot/archive/refs/heads/main.zip"
+$RepoZip = "https://github.com/ak495867/Blot/archive/refs/heads/master.zip"
 $InstallDir = Join-Path $env:LOCALAPPDATA "Blot"
 $VenvPython = Join-Path $InstallDir "Scripts\python.exe"
 $ScriptsDir = Join-Path $InstallDir "Scripts"
