@@ -5,11 +5,13 @@ $RepoZip = "https://github.com/ak495867/Blot/archive/refs/heads/master.zip"
 $InstallDir = Join-Path $env:LOCALAPPDATA "Blot"
 $VenvPython = Join-Path $InstallDir "Scripts\python.exe"
 $ScriptsDir = Join-Path $InstallDir "Scripts"
+$BlotExecutable = Join-Path $ScriptsDir "blot.exe"
 
 $PythonCommand = Get-Command py -ErrorAction SilentlyContinue
 
 if ($PythonCommand) {
     & $PythonCommand.Source -3 --version
+
     if ($LASTEXITCODE -eq 0) {
         $PythonArgs = @("-3")
     } else {
@@ -19,6 +21,7 @@ if ($PythonCommand) {
 
 if (-not $PythonCommand) {
     $PythonCommand = Get-Command python -ErrorAction SilentlyContinue
+
     if (-not $PythonCommand) {
         throw "Python 3.9+ is required. Install it from https://www.python.org/downloads/"
     }
@@ -65,6 +68,22 @@ if ($LASTEXITCODE -ne 0) {
     throw "Blot installation failed."
 }
 
+& $VenvPython -m pip show blot-loc
+
+if ($LASTEXITCODE -ne 0) {
+    throw "Blot package verification failed."
+}
+
+if (-not (Test-Path $BlotExecutable)) {
+    throw "Blot executable was not created."
+}
+
+& $BlotExecutable --help
+
+if ($LASTEXITCODE -ne 0) {
+    throw "Blot CLI verification failed."
+}
+
 $UserPath = [Environment]::GetEnvironmentVariable("Path", "User")
 $PathEntries = @($UserPath -split ";" | Where-Object { $_ })
 
@@ -75,12 +94,6 @@ if ($PathEntries -notcontains $ScriptsDir) {
 
 if (($env:Path -split ";") -notcontains $ScriptsDir) {
     $env:Path = "$ScriptsDir;$env:Path"
-}
-
-& $VenvPython -m pip show blot
-
-if ($LASTEXITCODE -ne 0) {
-    throw "Blot installation verification failed."
 }
 
 Write-Host ""
