@@ -7,13 +7,13 @@ Cross-platform command-line LOC analyzer. Recursively counts code, comments, bla
 **Windows (PowerShell)**
 
 ```powershell
-irm https://raw.githubusercontent.com/ak495867/Blot/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/ak495867/Blot/maaster/install.ps1 | iex
 ```
 
 **macOS / Linux**
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ak495867/Blot/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ak495867/Blot/master/install.sh | bash
 ```
 
 ## Usage
