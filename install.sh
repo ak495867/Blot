@@ -1,14 +1,17 @@
+
 #!/usr/bin/env bash
 set -euo pipefail
 
 REPO_ZIP="https://github.com/ak495867/Blot/archive/refs/heads/master.zip"
 INSTALL_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/blot"
 BIN_DIR="${HOME}/.local/bin"
+VENV_PYTHON="$INSTALL_DIR/bin/python"
+BLOT_EXEC="$INSTALL_DIR/bin/blot"
 PYTHON=""
 
 for candidate in python3 python; do
     if command -v "$candidate" >/dev/null 2>&1 &&
-       "$candidate" -c 'import sys; raise SystemExit(0 if sys.version_info >= (3,9) else 1)'; then
+       "$candidate" -c 'import sys; raise SystemExit(0 if sys.version_info >= (3,9) else 1)' 2>/dev/null; then
         PYTHON="$(command -v "$candidate")"
         break
     fi
@@ -21,14 +24,23 @@ fi
 
 mkdir -p "$INSTALL_DIR" "$BIN_DIR"
 
-if [[ ! -x "$INSTALL_DIR/bin/python" ]]; then
+if [[ ! -x "$VENV_PYTHON" ]]; then
     "$PYTHON" -m venv "$INSTALL_DIR"
 fi
 
-"$INSTALL_DIR/bin/python" -m pip install --upgrade "$REPO_ZIP"
+"$VENV_PYTHON" -m pip install --upgrade pip
+"$VENV_PYTHON" -m pip install --upgrade "$REPO_ZIP"
+
+if [[ ! -x "$BLOT_EXEC" ]]; then
+    printf '%s\n' "Blot installation verification failed." >&2
+    exit 1
+fi
+
+"$BLOT_EXEC" --help >/dev/null
 
 cat > "$BIN_DIR/blot" <<'WRAPPER'
 #!/usr/bin/env bash
+set -e
 exec "${XDG_DATA_HOME:-$HOME/.local/share}/blot/bin/blot" "$@"
 WRAPPER
 
@@ -40,8 +52,9 @@ case ":${PATH}:" in
     *)
         printf '\n%s\n' "Add this directory to your PATH: $BIN_DIR"
         printf '%s\n' 'For Bash, add: export PATH="$HOME/.local/bin:$PATH"'
-        printf '%s\n' 'For Zsh, add the same line to ~/.zshrc.'
+        printf '%s\n' 'For Zsh, add: export PATH="$HOME/.local/bin:$PATH"'
         ;;
 esac
 
-printf '\n%s\n' "Blot installed. Run: blot --help"
+printf '\n%s\n' "Blot installed successfully."
+printf '%s\n' "Run: blot --help"
