@@ -31,8 +31,10 @@ fi
 "$VENV_PYTHON" -m pip install --upgrade pip
 "$VENV_PYTHON" -m pip install --upgrade "$REPO_ZIP"
 
+"$VENV_PYTHON" -m pip show blot-loc >/dev/null
+
 if [[ ! -x "$BLOT_EXEC" ]]; then
-    printf '%s\n' "Blot installation verification failed." >&2
+    printf '%s\n' "Blot executable was not created." >&2
     exit 1
 fi
 
